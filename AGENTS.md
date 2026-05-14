@@ -63,6 +63,7 @@ proxy:
 - checkout 的 commit 来自项目配置 `commit_id`。
 - clone 目标目录来自项目配置 `source_dir`。
 - clone/fetch/checkout/submodule 初始化命令应在 Dockerfile 中完成。
+- Gradle/Android 项目应在源码 checkout 后、镜像构建阶段预下载默认单测命令使用的 Gradle wrapper 分发包，例如执行 `./gradlew --no-daemon --version`；这只用于把 Gradle 打进镜像，不属于执行单测。不要等到进入容器运行 `demo.py` 时才首次下载 Gradle。
 - 若镜像中设置的代理影响 `apt` 或 `git` 访问，可在相关 `RUN` 命令前临时清空 `http_proxy`、`https_proxy`、`HTTP_PROXY`、`HTTPS_PROXY`。
 
 ## 单测脚本

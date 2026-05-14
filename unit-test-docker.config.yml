@@ -1,23 +1,23 @@
 schema_version: 1
 
 project:
-  name: notes
-  local_dir: notes
-  image_name: notes-debian12-tests
-  dockerfile_path: notes/Dockerfiles/Dockerfile
+  name: android-upload
+  local_dir: android-upload
+  image_name: android-upload-test
+  dockerfile_path: Dockerfiles/Dockerfile
   workspace_dir: /workspace
-  source_dir: /workspace/NOTES
-  test_script_path: /workspace/NOTES/test/demo.py
+  source_dir: /workspace/android-upload
+  test_script_path: /workspace/android-upload/test/demo.py
   test_script_template: script/demo.py
 
 base_image:
   optional: true
-  value: ark-swalm1-cn-beijing.cr.volces.com/synthesis1/python_aidp_envdata.3.12:6cfb536a1f7f8eb2e0fd5cbf05db534e
+  value: ark-swalm1-cn-beijing.cr.volces.com/synthesis3/kotlin_aidp_envdata.1.9.22:52178576ab8ce032b88c110086929355
   strip_scheme_for_from: true
 
 source:
-  repo_url: https://github.com/nuttyartist/notes.git
-  commit_id: 56847c1e568fdacd339c8f3e79a963c0d7f2438e
+  repo_url: https://github.com/gotev/android-upload-service.git
+  commit_id: 25e6806b6629eee8bfb19dceed879ea45726b333
   clone_depth: 1
   init_submodules: true
 
@@ -27,13 +27,13 @@ platform:
 
 podman:
   tls_verify: false
-  build_context: notes
+  build_context: .
 
 proxy:
-  enabled: true
-  http_proxy: http://sys-proxy-rd-relay.byted.org:8118
-  https_proxy: http://sys-proxy-rd-relay.byted.org:8118
-  no_proxy: .byted.org
+  enabled: false
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
 
 dockerfile_rules:
   workdir: /workspace
@@ -53,7 +53,7 @@ test_output:
   progress_stream: stderr
 
 commands:
-  build_image: podman build --platform linux/amd64 --tls-verify=false -f notes/Dockerfiles/Dockerfile -t notes-debian12-tests notes
-  enter_container: podman run --platform linux/amd64 --rm -it notes-debian12-tests /bin/bash
-  run_tests: podman run --platform linux/amd64 --rm notes-debian12-tests /workspace/NOTES/test/demo.py --json
-  run_tests_in_container: cd /workspace/NOTES/test && python3 demo.py --json
+  build_image: podman build --platform linux/amd64 --tls-verify=false -f Dockerfiles/Dockerfile -t android-upload-test .
+  enter_container: podman run --platform linux/amd64 --rm -it android-upload-test /bin/bash
+  run_tests: podman run --platform linux/amd64 --rm android-upload-test /workspace/android-upload/test/demo.py --json
+  run_tests_in_container: cd /workspace/android-upload/test && python3 demo.py --json
