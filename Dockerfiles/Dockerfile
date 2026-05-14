@@ -87,6 +87,16 @@ RUN set -eux; \
     chmod +x examples/app/gradlew; \
     mkdir -p test
 
+RUN cat >> /workspace/android-upload/gradle.properties <<'EOF'
+
+# Container test defaults. Keep Kotlin compilation in-process to avoid daemon
+# incremental-cache file creation failures on emulated/overlay filesystems.
+org.gradle.daemon=false
+kotlin.compiler.execution.strategy=in-process
+kotlin.incremental=false
+kapt.incremental.apt=false
+EOF
+
 RUN set -eux; \
     cd "${SOURCE_DIR}"; \
     ./gradlew --no-daemon --version
