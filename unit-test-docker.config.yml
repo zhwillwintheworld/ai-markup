@@ -1,0 +1,59 @@
+schema_version: 1
+
+project:
+  name: notes
+  local_dir: notes
+  image_name: notes-debian12-tests
+  dockerfile_path: notes/Dockerfiles/Dockerfile
+  workspace_dir: /workspace
+  source_dir: /workspace/NOTES
+  test_script_path: /workspace/NOTES/test/demo.py
+  test_script_template: script/demo.py
+
+base_image:
+  optional: true
+  value: ark-swalm1-cn-beijing.cr.volces.com/synthesis1/python_aidp_envdata.3.12:6cfb536a1f7f8eb2e0fd5cbf05db534e
+  strip_scheme_for_from: true
+
+source:
+  repo_url: https://github.com/nuttyartist/notes.git
+  commit_id: 56847c1e568fdacd339c8f3e79a963c0d7f2438e
+  clone_depth: 1
+  init_submodules: true
+
+platform:
+  value: linux/amd64
+  reason: base image has no linux/arm64 manifest in the current Apple Silicon Podman environment
+
+podman:
+  tls_verify: false
+  build_context: notes
+
+proxy:
+  enabled: true
+  http_proxy: http://sys-proxy-rd-relay.byted.org:8118
+  https_proxy: http://sys-proxy-rd-relay.byted.org:8118
+  no_proxy: .byted.org
+
+dockerfile_rules:
+  workdir: /workspace
+  forbid_copy: true
+  forbid_add: true
+  write_files_with_run_cat_or_echo: true
+  run_tests_during_build: false
+  omit_cmd_bash: true
+  clone_repo_during_build: true
+
+test_output:
+  stdout_format: json
+  result_keys:
+    - passed_tests
+    - failed_tests
+    - skipped_tests
+  progress_stream: stderr
+
+commands:
+  build_image: podman build --platform linux/amd64 --tls-verify=false -f notes/Dockerfiles/Dockerfile -t notes-debian12-tests notes
+  enter_container: podman run --platform linux/amd64 --rm -it notes-debian12-tests /bin/bash
+  run_tests: podman run --platform linux/amd64 --rm notes-debian12-tests /workspace/NOTES/test/demo.py --json
+  run_tests_in_container: cd /workspace/NOTES/test && python3 demo.py --json
