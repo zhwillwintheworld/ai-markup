@@ -98,3 +98,24 @@ proxy:
   `podman run --platform <platform> --rm <image_name> <test_script_path> --json`
 - 进入容器后执行单测：
   `cd <test_script_dir> && python3 demo.py --json`
+
+## 经验总结文档要求
+
+- 用户要求生成镜像构建、单测镜像配置或错误复盘类经验总结时，默认在本目录 `build/` 下生成 Markdown 文档。
+- 文档文件名使用项目名和主题，推荐格式为 `<project-name>-image-build-experience.md`。
+- 经验总结必须基于当前项目的实际配置、Dockerfile/Containerfile、构建命令和真实报错，不要写成泛泛的 Docker 教程。
+- 文档至少包含以下一级章节：
+  - `配置难度分析`
+  - `镜像选择原因`
+  - `环境构建流程`
+  - `宝贵经验`
+- `宝贵经验` 下至少包含以下二级章节：
+  - `配置过程注意点`
+  - `错误处理`
+  - `不同系统的迁移策略`
+- `配置难度分析` 应说明难点来源，例如基础镜像、语言栈、包管理器、网络、架构、私有 registry、测试框架、日志解析等。
+- `镜像选择原因` 应引用项目配置中的基础镜像，并说明是否需要去掉 `http://` scheme、是否需要 `--platform`、是否需要 `--tls-verify=false` 或 registry 登录。
+- `环境构建流程` 应按实际 Dockerfile/Containerfile 顺序描述安装项、安装顺序、源码 checkout、依赖预下载、脚本写入和入口命令。
+- `错误处理` 应记录真实尝试、报错信息、定位过程和最终处理方式；如果为了绕过非必要组件做了调整，需要说明为什么不影响单测目标。
+- `不同系统的迁移策略` 应分别说明 Linux、macOS、Windows/WSL2 的差异，重点覆盖平台架构、Podman 连接、路径、换行符、registry 登录和容器内 Linux 行为。
+- 文档中涉及命令、镜像名、commit、路径、错误信息时使用代码块或行内代码，确保可复制和可追溯。
