@@ -1,23 +1,23 @@
 schema_version: 1
 
 project:
-  name: android-upload
-  local_dir: android-upload
-  image_name: android-upload-test
+  name: dart_style
+  local_dir: dart_style
+  image_name: dart_style-test
   dockerfile_path: Dockerfiles/Dockerfile
   workspace_dir: /workspace
-  source_dir: /workspace/android-upload
-  test_script_path: /workspace/android-upload/test/demo.py
+  source_dir: /workspace/dart_style
+  test_script_path: /workspace/dart_style/test/demo.py
   test_script_template: script/demo.py
 
 base_image:
   optional: true
-  value: ark-swalm1-cn-beijing.cr.volces.com/synthesis3/kotlin_aidp_envdata.1.9.22:52178576ab8ce032b88c110086929355
+  value: ark-swalm1-cn-beijing.cr.volces.com/synthesis1/dart_aidp_envdata.3.x:5901503d141098904979e353caed02d5
   strip_scheme_for_from: true
 
 source:
-  repo_url: https://github.com/gotev/android-upload-service.git
-  commit_id: 25e6806b6629eee8bfb19dceed879ea45726b333
+  repo_url: https://github.com/dart-lang/dart_style.git
+  commit_id: f662cf6281b9417c1b731ae5639d80e8aaad4187
   clone_depth: 1
   init_submodules: true
 
@@ -30,7 +30,7 @@ podman:
   build_context: .
 
 proxy:
-  enabled: false
+  enabled: true
   http_proxy: ""
   https_proxy: ""
   no_proxy: ""
